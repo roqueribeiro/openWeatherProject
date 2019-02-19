@@ -1,5 +1,5 @@
 <template>
-  <article @click="getDataFromApi(cityName)">
+  <article @click="getDataFromApi(cityNameFormated)">
     <transition name="fade">
       <div v-show="isLoading" class="preloader">
         <img alt="Loading..." src="../assets/loader.svg">
@@ -47,37 +47,38 @@ export default class Weather extends Vue {
   cityTemp = 0;
   cityHumidity = 0;
   cityPressure = 0;
+  cityNameFormated = "";
   tempClass = "";
   lastUpdated = new Date();
 
   mounted() {
     var cityNameSplit = this.cityName.split(",");
-    var cityNameFormated = `${cityNameSplit[0].toLowerCase()}_${cityNameSplit[1].toLowerCase()}`;
-    if (localStorage.getItem(cityNameFormated)) {
+    this.cityNameFormated = `${cityNameSplit[0].toLowerCase()}_${cityNameSplit[1].toLowerCase()}`;
+    if (localStorage.getItem(this.cityNameFormated)) {
       try {
         var dataObject = JSON.parse(
-          localStorage.getItem(cityNameFormated) || "{}"
+          localStorage.getItem(this.cityNameFormated) || "{}"
         );
         var currentMilliseconds = moment().diff(
           moment(dataObject.lastUpdated),
           "milliseconds"
         );
         if (currentMilliseconds >= this.updateInterval) {
-          localStorage.removeItem(cityNameFormated);
-          return this.getDataFromApi(cityNameFormated);
+          localStorage.removeItem(this.cityNameFormated);
+          return this.getDataFromApi(this.cityNameFormated);
         }
         this.cityTemp = dataObject.cityTemp;
         this.cityHumidity = dataObject.cityHumidity;
         this.cityPressure = dataObject.cityPressure;
         this.lastUpdated = dataObject.lastUpdated;
         setInterval(() => {
-          return this.getDataFromApi(cityNameFormated);
+          return this.getDataFromApi(this.cityNameFormated);
         }, this.updateInterval - currentMilliseconds);
       } catch (error) {
-        localStorage.removeItem(cityNameFormated);
+        localStorage.removeItem(this.cityNameFormated);
       }
     } else {
-      this.getDataFromApi(cityNameFormated);
+      this.getDataFromApi(this.cityNameFormated);
     }
   }
 
@@ -141,7 +142,7 @@ article {
   position: relative;
   flex: auto;
   flex-basis: 100%;
-  max-width: 250px;
+  max-width: 280px;
   margin: 25px;
   background: $bg-card;
   box-shadow: 0 2px 4px $shadow;

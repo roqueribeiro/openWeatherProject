@@ -25,15 +25,17 @@ export default class Home extends Vue {}
   position: absolute;
   width: 100%;
   height: calc(100% - 60px);
-  overflow-x: hidden;
-  overflow-y: scroll;
   section {
     height: 100%;
+    padding: 25px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: scroll;
   }
   @media screen and (max-width: 768px) {
     section :nth-child(1) {
